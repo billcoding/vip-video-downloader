@@ -1,7 +1,7 @@
 # vip-video-downloader
 VIP video downloader, such as: iqiyi, youku, qq, ...etc.
 
-#usage
+# usage
 vip-video-download URL [flags]
 
 # examples
