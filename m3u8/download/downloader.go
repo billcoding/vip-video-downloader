@@ -17,9 +17,8 @@ import (
 const (
 	tsExt            = ".ts"
 	tsFolderName     = "ts"
-	mergeTSFilename  = "output.ts"
 	tsTempFileSuffix = "_tmp"
-	progressWidth    = 40
+	progressWidth    = 100
 )
 
 type Downloader struct {
@@ -27,6 +26,7 @@ type Downloader struct {
 	queue    []int
 	folder   string
 	tsFolder string
+	tsName   string
 	finish   int32
 	segLen   int
 
@@ -42,7 +42,7 @@ func (d *Downloader) OutputFile() string {
 }
 
 // NewTask returns a Task instance
-func NewTask(output string, url string, verbose bool) (*Downloader, error) {
+func NewTask(output, outFile, url string, verbose bool) (*Downloader, error) {
 	result, err := parse.FromURL(url)
 	if err != nil {
 		return nil, err
@@ -68,6 +68,7 @@ func NewTask(output string, url string, verbose bool) (*Downloader, error) {
 	d := &Downloader{
 		folder:   folder,
 		tsFolder: tsFolder,
+		tsName:   outFile,
 		result:   result,
 		verbose:  verbose,
 	}
@@ -211,7 +212,7 @@ func (d *Downloader) merge() error {
 	}
 
 	// Create a TS file for merging, all segment files will be written to this file.
-	mFilePath := filepath.Join(d.folder, mergeTSFilename)
+	mFilePath := filepath.Join(d.folder, d.tsName+tsExt)
 	mFile, err := os.Create(mFilePath)
 	if err != nil {
 		return fmt.Errorf("create main TS file failed：%s", err.Error())
