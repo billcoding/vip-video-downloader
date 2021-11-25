@@ -14,11 +14,11 @@ import (
 
 var (
 	mergeCmd = &cobra.Command{
-		Use:     "merge",
+		Use:     "merge DIRECTORY -o OUTPUT",
 		Aliases: []string{"m"},
 		Short:   "Merge Videos or Files",
 		Long:    "Merge Videos or Files",
-		Example: `vip-video-downloader merge DIRECTORY -o output.ext`,
+		Example: `vip-video-downloader merge /to/path -o output.ts`,
 		Run:     mergeRun,
 	}
 

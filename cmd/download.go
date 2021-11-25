@@ -14,7 +14,7 @@ import (
 
 var (
 	downloadCmd = &cobra.Command{
-		Use:     "download",
+		Use:     "download URL",
 		Aliases: []string{"d"},
 		Short:   "Download Vip Video or M3u8",
 		Long: `Vip Video Download
@@ -27,8 +27,7 @@ no convert: vip-video-downloader download https://youku.com/v/xyz.html -c=F
 convert to mkv format: vip-video-downloader download https://youku.com/v/xyz.html -f="mkv"
 special FFmpeg path: vip-video-downloader download https://youku.com/v/xyz.html -F="/to/path/ffmpeg"
 no use download channel: vip-video-downloader download https://example.com/index.m3u8 -U=F
-use download channel: vip-video-downloader download https://example.com/index.m3u8 -C=lqiyi -N=100
-`,
+use download channel: vip-video-downloader download https://example.com/index.m3u8 -C=lqiyi -N=100`,
 		Run: downloadRun,
 	}
 
