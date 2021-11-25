@@ -7,13 +7,16 @@ import (
 	"time"
 )
 
-func Get(url string) (io.ReadCloser, error) {
+func Get(url string, verbose bool) (io.ReadCloser, error) {
 	c := http.Client{
 		Timeout: time.Duration(60) * time.Second,
 	}
 	resp, err := c.Get(url)
 	if err != nil {
 		return nil, err
+	}
+	if verbose {
+		fmt.Println(fmt.Sprintf("[total %.4fMB] %s", float64(resp.ContentLength)/1024/1024, url))
 	}
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("http error: status code %d", resp.StatusCode)

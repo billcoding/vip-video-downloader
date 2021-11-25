@@ -3,7 +3,8 @@ package cmd
 import (
 	"fmt"
 	"github.com/billcoding/vip-video-downloader/channel"
-	"github.com/billcoding/vip-video-downloader/m3u8/download"
+	"github.com/billcoding/vip-video-downloader/download"
+	m3u8DL "github.com/billcoding/vip-video-downloader/m3u8/download"
 	"github.com/spf13/cobra"
 	"os"
 	"os/exec"
@@ -71,24 +72,39 @@ func run(_ *cobra.Command, args []string) {
 		panic("error: require URL")
 	}
 	URL := args[0]
+	URLExt := ""
+	isM3u8 := false
+	resultFile := ""
+	var err error
 	if useDownloadChannel {
 		if c := channel.GetChannel(downloadChannel); c == nil {
 			panic("error: not support channel:" + downloadChannel)
 		} else {
-			URL = c.Parse(URL)
+			URL, URLExt, isM3u8 = c.Parse(URL)
 		}
 	}
-	tasker, err := download.NewTask(outputDir, outputFile, URL, verbose)
-	if err != nil {
-		panic(err)
+
+	if isM3u8 {
+		tasker, err := m3u8DL.NewTask(outputDir, outputFile, URL, verbose)
+		if err != nil {
+			panic(err)
+		}
+		err = tasker.Start(downloadConcurrency)
+		if err != nil {
+			panic(err)
+		}
+		resultFile = tasker.OutputFile()
+	} else {
+		resultFile = filepath.Join(outputDir, outputFile+"."+URLExt)
+		dlER := download.Downloader{
+			URL:    URL,
+			Output: resultFile,
+		}
+		dlER.Start(verbose)
 	}
-	err = tasker.Start(downloadConcurrency)
-	if err != nil {
-		panic(err)
-	}
-	resultFile := tasker.OutputFile()
-	if convert {
-		targetFilePath := filepath.Join(filepath.Dir(resultFile), outputFile+"."+strings.ToLower(convertFormat))
+
+	targetFilePath := filepath.Join(filepath.Dir(resultFile), outputFile+"."+strings.ToLower(convertFormat))
+	if convert && !strings.EqualFold(resultFile, targetFilePath) {
 		ffmpegCmd := exec.Command(ffmpegPath, "-y", "-i", resultFile, "-c", "copy", targetFilePath)
 		if verbose {
 			ffmpegCmd.Stdout = os.Stdout
