@@ -2,8 +2,8 @@
 VIP Video Downloader, such as: iqiyi, youku, qq, ...etc.
 
 # usage
-vip-video-download URL [flags]
+vip-video-downloader URL [flags]
 
 # examples
-vip-video-download https://example.com/index.m3u8 -U=F
-vip-video-download https://youku.com/v/xyz.html
+* vip-video-downloader https://example.com/index.m3u8 -U=F
+* vip-video-downloader https://youku.com/v/xyz.html
