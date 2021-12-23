@@ -6,7 +6,7 @@ import (
 )
 
 func TestGet(t *testing.T) {
-	body, err := Get("https://raw.githubusercontent.com/billcoding/m3u8/master/README.md", false)
+	body, err := Get("https://raw.githubusercontent.com/billcoding/vip-video-downloader/main/README.md", false)
 	if err != nil {
 		t.Error(err)
 	}
