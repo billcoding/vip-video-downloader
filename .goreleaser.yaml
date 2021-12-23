@@ -9,6 +9,7 @@ before:
 builds:
   - env:
       - CGO_ENABLED=0
+      - GITHUB_TOKEN=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
     goos:
       - linux
       - windows
