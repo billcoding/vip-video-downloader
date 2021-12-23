@@ -9,7 +9,7 @@ var (
 		Use:     "vip-video-downloader",
 		Short:   "Vip Video Downloader",
 		Long:    `Vip Video Downloader`,
-		Version: "1.0.0",
+		Version: "1.0.1",
 	}
 )
 
