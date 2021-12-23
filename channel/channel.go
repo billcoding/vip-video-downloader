@@ -5,7 +5,7 @@ type Channel interface {
 }
 
 var channels = map[string]Channel{
-	"lqiyi": newLQiYi(),
+	"c1": C1(),
 }
 
 func GetChannel(name string) Channel {

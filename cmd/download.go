@@ -27,7 +27,7 @@ no convert: vip-video-downloader download https://youku.com/v/xyz.html -c=F
 convert to mkv format: vip-video-downloader download https://youku.com/v/xyz.html -f="mkv"
 special FFmpeg path: vip-video-downloader download https://youku.com/v/xyz.html -F="/to/path/ffmpeg"
 no use download channel: vip-video-downloader download https://example.com/index.m3u8 -U=F
-use download channel: vip-video-downloader download https://example.com/index.m3u8 -C=lqiyi -N=100`,
+use download channel: vip-video-downloader download https://example.com/index.m3u8 -C=c1 -N=100`,
 		Run: downloadRun,
 	}
 
@@ -53,7 +53,7 @@ func init() {
 	downloadCmd.PersistentFlags().StringVarP(&outputFile, "output-file", "o", "video", "Output file name without extension")
 
 	downloadCmd.PersistentFlags().BoolVarP(&useDownloadChannel, "use-download-channel", "U", true, "Use download channel")
-	downloadCmd.PersistentFlags().StringVarP(&downloadChannel, "download-channel", "C", "lqiyi", "Download video channel: lqiyi, ...")
+	downloadCmd.PersistentFlags().StringVarP(&downloadChannel, "download-channel", "C", "c1", "Download video channel: c1, ...")
 	downloadCmd.PersistentFlags().IntVarP(&downloadConcurrency, "download-concurrency", "N", 25, "Download video concurrency")
 
 	downloadCmd.PersistentFlags().BoolVarP(&convert, "convert", "c", true, "Convert downloaded video")

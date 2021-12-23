@@ -8,15 +8,15 @@ import (
 	"strings"
 )
 
-type lQiYi struct {
+type c1 struct {
 	baseAPI string
 }
 
-func newLQiYi() *lQiYi {
-	return &lQiYi{`http://touyongsima.lqiyi.co:5566/analysi.php?v=`}
+func C1() *c1 {
+	return &c1{`http://42.193.18.62:9999/analysis.php?v=`}
 }
 
-func (l *lQiYi) Parse(URL string) (string, string, bool) {
+func (l *c1) Parse(URL string) (string, string, bool) {
 	resp, err := http.Get(l.baseAPI + url.PathEscape(URL))
 	if err != nil {
 		panic(err)
