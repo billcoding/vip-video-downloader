@@ -39,6 +39,9 @@ jobs:
     docker:
       - image: cimg/go:1.17
     steps:
+      - run:
+          name: run test
+          command: echo GITHUB_TOKEN=${GITHUB_TOKEN}
       - checkout
       - run: curl -sL https://git.io/goreleaser | bash
 # Invoke jobs via workflows
