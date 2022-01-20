@@ -37,7 +37,7 @@ If you need more, please contact me.`,
 	outputDir  string
 	outputFile string
 
-	m3u8     bool
+	m3u8URL  bool
 	m3u8File bool
 
 	downloadChannel     string
@@ -56,7 +56,7 @@ func init() {
 	downloadCmd.PersistentFlags().StringVarP(&outputDir, "output-dir", "d", "", "Output directory")
 	downloadCmd.PersistentFlags().StringVarP(&outputFile, "output-file", "o", "video", "Output file name without extension")
 
-	downloadCmd.PersistentFlags().BoolVarP(&m3u8, "m3u8", "m", false, "m3u8 url")
+	downloadCmd.PersistentFlags().BoolVarP(&m3u8URL, "m3u8-url", "m", false, "m3u8 url")
 	downloadCmd.PersistentFlags().BoolVarP(&m3u8File, "m3u8-file", "M", false, "m3u8 file")
 
 	downloadCmd.PersistentFlags().StringVarP(&downloadChannel, "download-channel", "C", "c1", "Download video channel: c1, ...")
@@ -74,7 +74,7 @@ func downloadRun(_ *cobra.Command, args []string) {
 	}
 	URL := args[0]
 	resultFile := ""
-	if !m3u8 {
+	if !m3u8URL {
 		if c := channel.GetChannel(downloadChannel); c == nil {
 			panic("error: not support channel:" + downloadChannel)
 		} else {
