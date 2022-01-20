@@ -56,7 +56,7 @@ func init() {
 	downloadCmd.PersistentFlags().StringVarP(&outputDir, "output-dir", "d", "", "Output directory")
 	downloadCmd.PersistentFlags().StringVarP(&outputFile, "output-file", "o", "video", "Output file name without extension")
 
-	downloadCmd.PersistentFlags().BoolVarP(&m3u8, "m3u8", "m", false, "m3u8 direct")
+	downloadCmd.PersistentFlags().BoolVarP(&m3u8, "m3u8", "m", false, "m3u8 url")
 	downloadCmd.PersistentFlags().BoolVarP(&m3u8File, "m3u8-file", "M", false, "m3u8 file")
 
 	downloadCmd.PersistentFlags().StringVarP(&downloadChannel, "download-channel", "C", "c1", "Download video channel: c1, ...")
