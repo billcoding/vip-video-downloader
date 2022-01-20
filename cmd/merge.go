@@ -117,11 +117,11 @@ func mergeRun(_ *cobra.Command, args []string) {
 	}
 	defer func() { _ = mergedFile.Close() }()
 	for _, f := range orderedFiles {
-		if openFile, err := os.OpenFile(filepath.Join(dir, f), os.O_RDONLY, 0700); err != nil {
-			panic(err)
+		if openFile, err2 := os.OpenFile(filepath.Join(dir, f), os.O_RDONLY, 0700); err2 != nil {
+			panic(err2)
 		} else {
-			if _, err := io.Copy(mergedFile, openFile); err != nil {
-				panic(err)
+			if _, err3 := io.Copy(mergedFile, openFile); err3 != nil {
+				panic(err3)
 			}
 			if verbose {
 				fmt.Println(fmt.Sprintf("[merge] %s", filepath.Join(dir, f)))
