@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	tsExt            = ".ts"
-	tsFolderName     = "ts"
+	tsExt = ".ts"
+	// tsFolderName     = "ts"
 	tsTempFileSuffix = "_tmp"
 	progressWidth    = 100
 )
@@ -32,8 +32,9 @@ type Downloader struct {
 
 	result *parse.Result
 
-	verbose    bool
-	outputFile string
+	verbose      bool
+	tsFolderName string
+	outputFile   string
 }
 
 // OutputFile get output file
@@ -42,35 +43,36 @@ func (d *Downloader) OutputFile() string {
 }
 
 // NewTask returns a Task instance
-func NewTask(output, outFile, url string, verbose bool) (*Downloader, error) {
-	result, err := parse.FromURL(url)
+func NewTask(output, outFile, url, tsFolderName string, isFile, verbose bool) (*Downloader, error) {
+	result, err := parse.FromURL(url, isFile)
 	if err != nil {
 		return nil, err
 	}
 	var folder string
 	// If no output folder specified, use current directory
 	if output == "" {
-		current, err := tool.CurrentDir()
-		if err != nil {
-			return nil, err
+		current, err2 := tool.CurrentDir()
+		if err2 != nil {
+			return nil, err2
 		}
 		folder = filepath.Join(current, output)
 	} else {
 		folder = output
 	}
-	if err := os.MkdirAll(folder, os.ModePerm); err != nil {
-		return nil, fmt.Errorf("create storage folder failed: %s", err.Error())
+	if err2 := os.MkdirAll(folder, os.ModePerm); err2 != nil {
+		return nil, fmt.Errorf("create storage folder failed: %s", err2.Error())
 	}
 	tsFolder := filepath.Join(folder, tsFolderName)
-	if err := os.MkdirAll(tsFolder, os.ModePerm); err != nil {
-		return nil, fmt.Errorf("create ts folder '[%s]' failed: %s", tsFolder, err.Error())
+	if err3 := os.MkdirAll(tsFolder, os.ModePerm); err3 != nil {
+		return nil, fmt.Errorf("create ts folder '[%s]' failed: %s", tsFolder, err3.Error())
 	}
 	d := &Downloader{
-		folder:   folder,
-		tsFolder: tsFolder,
-		tsName:   outFile,
-		result:   result,
-		verbose:  verbose,
+		folder:       folder,
+		tsFolder:     tsFolder,
+		tsName:       outFile,
+		tsFolderName: tsFolderName,
+		result:       result,
+		verbose:      verbose,
 	}
 	d.segLen = len(result.M3u8.Segments)
 	d.queue = genSlice(d.segLen)
@@ -93,11 +95,11 @@ func (d *Downloader) Start(concurrency int) error {
 		wg.Add(1)
 		go func(idx int) {
 			defer wg.Done()
-			if err := d.download(idx); err != nil {
+			if err2 := d.download(idx); err2 != nil {
 				// Back into the queue, retry request
-				fmt.Printf("[failed] %s\n", err.Error())
-				if err := d.back(idx); err != nil {
-					fmt.Printf(err.Error())
+				fmt.Printf("[failed] %s\n", err2.Error())
+				if err3 := d.back(idx); err3 != nil {
+					fmt.Printf(err3.Error())
 				}
 			}
 			<-limitChan
@@ -201,8 +203,8 @@ func (d *Downloader) merge() error {
 	// In fact, the number of downloaded segments should be equal to number of m3u8 segments
 	missingCount := 0
 	for idx := 0; idx < d.segLen; idx++ {
-		tsFilename := tsFilename(idx)
-		f := filepath.Join(d.tsFolder, tsFilename)
+		tsFN := tsFilename(idx)
+		f := filepath.Join(d.tsFolder, tsFN)
 		if _, err := os.Stat(f); err != nil {
 			missingCount++
 		}
@@ -223,10 +225,10 @@ func (d *Downloader) merge() error {
 	writer := bufio.NewWriter(mFile)
 	mergedCount := 0
 	for segIndex := 0; segIndex < d.segLen; segIndex++ {
-		tsFilename := tsFilename(segIndex)
-		bytes, err := ioutil.ReadFile(filepath.Join(d.tsFolder, tsFilename))
-		_, err = writer.Write(bytes)
-		if err != nil {
+		tsFN := tsFilename(segIndex)
+		bytes, err2 := ioutil.ReadFile(filepath.Join(d.tsFolder, tsFN))
+		_, err2 = writer.Write(bytes)
+		if err2 != nil {
 			continue
 		}
 		mergedCount++
