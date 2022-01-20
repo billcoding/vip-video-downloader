@@ -52,7 +52,7 @@ If you need more, please contact me.`,
 func init() {
 	downloadCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "V", false, "Print verbose log")
 	downloadCmd.PersistentFlags().BoolVarP(&keepTS, "keep", "k", false, "Keep TS files")
-	downloadCmd.PersistentFlags().StringVar(&tsDir, "ts-dir", "ts", "TS files directory")
+	downloadCmd.PersistentFlags().StringVarP(&tsDir, "ts-dir", "t", "ts", "TS files directory")
 	downloadCmd.PersistentFlags().StringVarP(&outputDir, "output-dir", "d", "", "Output directory")
 	downloadCmd.PersistentFlags().StringVarP(&outputFile, "output-file", "o", "video", "Output file name without extension")
 
