@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/billcoding/vip-video-downloader/channel"
+	"github.com/billcoding/vip-video-downloader/download"
 	m3u8DL "github.com/billcoding/vip-video-downloader/m3u8/download"
 	"github.com/spf13/cobra"
 	"os"
@@ -27,7 +28,7 @@ If you need more, please contact me.`,
 - convert to mkv format: vip-video-downloader download -f="mkv" "https://abc.com/v/xyz.html"
 - special FFmpeg path: vip-video-downloader download -F="/to/path/ffmpeg" "https://abc.com/v/xyz.html"
 - m3u8 URL: vip-video-downloader download -m "https://abc.com/index.m3u8"
-- m3u8 File: vip-video-downloader download -m -M "/to/path/v.m3u8"`,
+- m3u8 File: vip-video-downloader download -M "/to/path/v.m3u8"`,
 		Run: downloadRun,
 	}
 
@@ -74,25 +75,32 @@ func downloadRun(_ *cobra.Command, args []string) {
 	}
 	URL := args[0]
 	resultFile := ""
+	var rt string
 	if !m3u8URL {
 		if c := channel.GetChannel(downloadChannel); c == nil {
 			panic("error: not support channel:" + downloadChannel)
 		} else {
-			URL = c.Parse(URL)
+			URL, rt = c.Parse(URL)
 			if verbose {
-				fmt.Printf("[m3u8]%s\n", URL)
+				fmt.Printf("[%s]%s\n", rt, URL)
 			}
 		}
 	}
-	tasker, err := m3u8DL.NewTask(outputDir, outputFile, URL, tsDir, m3u8File, verbose)
-	if err != nil {
-		panic(err)
+	if rt == "m3u8" {
+		tasker, err := m3u8DL.NewTask(outputDir, outputFile, URL, tsDir, m3u8File, verbose)
+		if err != nil {
+			panic(err)
+		}
+		err = tasker.Start(downloadConcurrency)
+		if err != nil {
+			panic(err)
+		}
+		resultFile = tasker.OutputFile()
+	} else {
+		resultFile = filepath.Join(outputDir, outputFile+"."+rt)
+		dr := &download.Downloader{URL: URL, Output: resultFile}
+		dr.Start(verbose)
 	}
-	err = tasker.Start(downloadConcurrency)
-	if err != nil {
-		panic(err)
-	}
-	resultFile = tasker.OutputFile()
 	targetFilePath := filepath.Join(filepath.Dir(resultFile), outputFile+"."+strings.ToLower(convertFormat))
 	if convert && !strings.EqualFold(resultFile, targetFilePath) {
 		ffmpegCmd := exec.Command(ffmpegPath, "-y", "-i", resultFile, "-c", "copy", targetFilePath)
@@ -100,7 +108,7 @@ func downloadRun(_ *cobra.Command, args []string) {
 			ffmpegCmd.Stdout = os.Stdout
 			ffmpegCmd.Stderr = os.Stdout
 		}
-		if err = ffmpegCmd.Run(); err != nil {
+		if err := ffmpegCmd.Run(); err != nil {
 			panic(err)
 		}
 		if !keepTS {

@@ -1,7 +1,7 @@
 package channel
 
 type Channel interface {
-	Parse(URL string) string
+	Parse(URL string) (string, string)
 }
 
 var channels = map[string]Channel{
