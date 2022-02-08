@@ -9,7 +9,7 @@ import (
 
 func Get(url string, verbose bool) (io.ReadCloser, error) {
 	c := http.Client{
-		Timeout: time.Duration(60) * time.Second,
+		Timeout: time.Minute * 5,
 	}
 	resp, err := c.Get(url)
 	if err != nil {
